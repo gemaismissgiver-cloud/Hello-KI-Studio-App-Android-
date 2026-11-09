@@ -1,0 +1,95 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '9.3.1'
+
+      - name: Restore Keystore
+        run: |
+          if [ -f debug.keystore.base64 ] && [ ! -f debug.keystore ]; then
+            base64 -d debug.keystore.base64 > debug.keystore
+          fi
+
+      - name: Create .env file
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            touch .env
+          fi
+          if [ -n "${{ secrets.GROQ_API_KEY }}" ]; then
+            echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" >> .env
+          fi
+          if [ -n "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          fi
+
+      - name: Build Debug APK
+        env:
+          JAVA_TOOL_OPTIONS: "-Djava.awt.headless=true"
+        run: |
+          if [ -f gradlew ]; then
+            chmod +x gradlew
+            ./gradlew assembleDebug --no-daemon
+          else
+            gradle assembleDebug --no-daemon
+          fi
+
+      - name: Prepare APK File
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk Hello_KI_Native_App.apk
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Hello_KI_Native_App-APK
+          path: Hello_KI_Native_App.apk
+
+      - name: Publish Native GitHub Release
+        uses: softprops/action-gh-release@v2
+        continue-on-error: true
+        with:
+          tag_name: release-native-apk
+          name: "Hello KI – Native Android APK (Aktueller Build)"
+          body: |
+            ### 🤖 Hello KI – Native Android App (Direkter Download)
+
+            - **APK-Datei**: `Hello_KI_Native_App.apk`
+            - **Status**: Erfolgreich kompiliert via GitHub Actions CI
+            - **Highlights**:
+              - 0-Punkt Logik & Resonanz-System
+              - 226+ Akten & Datenprotokolle im Akten-Tab
+              - Medienspeicher: Screenshots, Bilder, Videos, Textnotizen, Audiodateien
+              - Open-Source & Offline-Fähigkeit
+            
+            **Installation auf dem Android-Smartphone:**
+            1. Lade `Hello_KI_Native_App.apk` herunter.
+            2. Tippe auf die heruntergeladene Datei.
+            3. Falls gefragt: „Aus dieser Quelle installieren“ / „Unbekannte Quellen zulassen“ aktivieren.
+            4. Die native Android-App ist einsatzbereit!
+          files: Hello_KI_Native_App.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
+
