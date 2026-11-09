@@ -1035,7 +1035,7 @@ fun ChatScreen(
                         showMediaPromptDialog = false
                     }
                 ) {
-                    Icon(Icons.Default.Send, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("Analysieren & Senden")
                 }

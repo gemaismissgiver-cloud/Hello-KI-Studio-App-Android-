@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -143,7 +144,7 @@ fun CodeStudioScreen(
                 selected = selectedStudioTab == CodeStudioTab.DEV_HUB,
                 onClick = { selectedStudioTab = CodeStudioTab.DEV_HUB },
                 text = { Text("📚 Dev-Hub", fontWeight = FontWeight.Bold, maxLines = 1) },
-                icon = { Icon(Icons.Default.MenuBook, contentDescription = null) }
+                icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null) }
             )
         }
 
@@ -301,7 +302,7 @@ fun CodeStudioScreen(
                                                 onSendCodeToChat(currentGeneratedFileName, currentGeneratedCode)
                                                 Toast.makeText(context, "Code an Chat gesendet!", Toast.LENGTH_SHORT).show()
                                             }) {
-                                                Icon(Icons.Default.Send, contentDescription = "In Chat übernehmen")
+                                                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "In Chat übernehmen")
                                             }
                                         }
                                     }
@@ -870,7 +871,7 @@ fun PlatformBundlesTabContent(
             ) {
                 Column(modifier = Modifier.padding(14.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.HelpOutline, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                        Icon(Icons.AutoMirrored.Filled.HelpOutline, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "Schritt-für-Schritt Anleitung (${currentBundle.platform}):",
@@ -917,7 +918,7 @@ fun PlatformBundlesTabContent(
                                     file.fileName.endsWith(".py") -> Icons.Default.Code
                                     file.fileName.endsWith(".yml") || file.fileName.endsWith(".yaml") -> Icons.Default.Settings
                                     file.fileName.endsWith(".json") -> Icons.Default.DataObject
-                                    else -> Icons.Default.InsertDriveFile
+                                    else -> Icons.AutoMirrored.Filled.InsertDriveFile
                                 },
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp)
